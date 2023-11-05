@@ -28,20 +28,26 @@ public class UserInterface {
                 System.out.println("3. Finalize order");
                 System.out.println("4. Exit");
 
-                int choice = scanner.nextInt();
-                switch (choice) {
-                    case 1:
-                        displayRestaurants();
-                        break;
-                    case 2:
-                        cartService.displayCart();
-                        break;
-                    case 3:
-                        orderService.finalizeOrder();
-                        break;
-                    case 4:
-                        keepShopping = false;
-                        break;
+                if(scanner.hasNextInt()){
+                    int choice = scanner.nextInt();
+                    scanner.nextLine();
+                    switch (choice) {
+                        case 1:
+                            displayRestaurants();
+                            break;
+                        case 2:
+                            cartService.displayCart();
+                            break;
+                        case 3:
+                            orderService.finalizeOrder();
+                            break;
+                        case 4:
+                            keepShopping = false;
+                            break;
+                    }
+                }else {
+                    System.out.println("Invalid input.Please enter a number from 1 to 4");
+                    scanner.next();
                 }
             }
         }
