@@ -46,7 +46,7 @@ public class UserInterface {
                             break;
                     }
                 }else {
-                    System.out.println("Invalid input.Please enter a number from 1 to 4");
+                    System.out.println("Invalid input.Please enter a number from 1 to 4.");
                     scanner.next();
                 }
             }
@@ -57,6 +57,10 @@ public class UserInterface {
             System.out.println("Enter the number of the restaurant to view details or 0 to go back.");
             int choice;
             do {
+                while (!scanner.hasNextInt()) {
+                    System.out.println("Invalid input.Please enter a number.");
+                    scanner.next();
+                }
                 choice = scanner.nextInt();
                 scanner.nextLine();
                 if (choice < 0 || choice > restaurants.size()) {
@@ -64,7 +68,8 @@ public class UserInterface {
                 } else if (choice > 0) {
                     int restaurantId = restaurants.get(choice - 1).getRestaurant_id();
                     displayMenusForRestaurant(restaurantId);
-                }
+                }else
+                    startShopping();
             } while (choice != 0);
         }
 
@@ -72,40 +77,50 @@ public class UserInterface {
 
         private void displayMenusForRestaurant(int restaurantId) {
             List<Menu> menus = menuService.displayMenusForRestaurant(restaurantId);
-            System.out.println("\nSelect a menu to view its sections or type 'back' to go back.");
-            String input = scanner.nextLine();
-            if (input.equalsIgnoreCase("back")) {
-                displayRestaurants();
-            }
-
-            try {
-                int choice = Integer.parseInt(input);
-                if (choice > 0 && choice <= menus.size()) {
+            System.out.println("\nSelect a menu to view its sections or type 0 to go back.");
+            int choice;
+            do {
+                while(!scanner.hasNextInt()){
+                    System.out.println("Invalid input. Please enter a number");
+                    scanner.next();
+                }
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                if (choice == 0) {
+                    displayRestaurants();
+                }
+                else if (choice > 0 && choice <= menus.size()) {
                     int menuId = menus.get(choice - 1).getMenu_id();
-                    displaySectionsForMenu(menuId,restaurantId);
+                    displaySectionsForMenu(menuId, restaurantId);
                 } else {
                     System.out.println("Invalid choice. Please select a valid option.");
                 }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number or type 'back'.");
+            }while (true);
+
             }
-        }
 
         private void displaySectionsForMenu(int menuId,int restaurantId) {
             List<Section> sections = sectionService.displaySectionsForMenu(menuId);
-            System.out.println("\nSelect a section by number or type 'back' to go back.");
-            String input = scanner.nextLine();
+            System.out.println("\nSelect a section by number or type 0 to go back.");
+            int choice;
+            do {
+                while(!scanner.hasNextInt()){
+                    System.out.println("Invalid input.Please enter a number");
+                    scanner.next();
+                }
 
-            if (input.equalsIgnoreCase("back")) {
-                displayMenusForRestaurant(restaurantId);
-            }
-            int choice = Integer.parseInt(input);
-            if (choice > 0 && choice <= sections.size()) {
-                int sectionId = sections.get(choice - 1).getSection_id();
-                displayMealsForSection(sectionId,menuId);
-            } else {
-                System.out.println("Invalid choice. Please select a valid option.");
-            }
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                if (choice == 0) {
+                    displayMenusForRestaurant(restaurantId);
+                }
+                if (choice > 0 && choice <= sections.size()) {
+                    int sectionId = sections.get(choice - 1).getSection_id();
+                    displayMealsForSection(sectionId, menuId);
+                } else {
+                    System.out.println("Invalid choice. Please select a valid option.");
+                }
+            }while(true);
         }
 
         private void displayMealsForSection(int sectionId,int menuId) {
@@ -118,15 +133,22 @@ public class UserInterface {
         int choice;
         do {
             System.out.println("Enter meal number to add to cart, 0 to finalize or -1 to go back.");
+            while(!scanner.hasNextInt()){
+                System.out.println("Invalid input.Please enter a number");
+                scanner.next();
+            }
             choice = scanner.nextInt();
             scanner.nextLine();
-
             if (choice > 0 && choice <= meals.size()) {
                 Meal selectedMeal = meals.get(choice - 1);
+                int quantity;
                 System.out.println("How many quantities of " + selectedMeal.getDescription() + " would you like to add to your cart?");
-                int quantity = scanner.nextInt();
+                while(!scanner.hasNextInt()){
+                    System.out.println("Invalid input.Please enter a number");
+                    scanner.nextLine();
+                }
+                quantity = scanner.nextInt();
                 scanner.nextLine();
-
                 cartService.addItemToCart(selectedMeal, quantity);
                 System.out.println(quantity + " x " + selectedMeal.getDescription() + " has been added to the cart!");
             } else if (choice == -1) {
