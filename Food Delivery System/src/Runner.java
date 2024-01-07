@@ -1,15 +1,25 @@
+import Database.DatabaseManager;
+import Expections.EntityNotFoundException;
+import Model.Meal;
+import Model.Menu;
+import Model.Restaurant;
+import Model.Section;
+import Repositories.MealRepository;
+import Repositories.MenuRepository;
+import Repositories.RestaurantRepository;
+import Repositories.SectionRepository;
+
 import java.util.List;
 
 public class Runner {
 
-    private final DatabaseManager databaseManager;
     private final RestaurantRepository restaurantRepo;
     private final MenuRepository menuRepo;
     private final SectionRepository sectionRepo;
     private final MealRepository mealRepo;
 
     public Runner(String dbPath) {
-        this.databaseManager = new DatabaseManager(dbPath);
+        DatabaseManager databaseManager = new DatabaseManager(dbPath);
         this.restaurantRepo = new RestaurantRepository(databaseManager);
         this.menuRepo = new MenuRepository(databaseManager);
         this.sectionRepo = new SectionRepository(databaseManager);
@@ -53,7 +63,7 @@ public class Runner {
     private Restaurant createRestaurant(String name, String address, String contact) {
         Restaurant restaurant = new Restaurant(name, address, contact);
         restaurantRepo.createRestaurant(restaurant);
-        int restaurant_id = 0;
+        int restaurant_id;
         try {
             restaurant_id = restaurantRepo.getRestaurantIdByName(name);
         } catch (EntityNotFoundException e) {
@@ -67,10 +77,8 @@ public class Runner {
         Menu menu = new Menu(restaurant.getRestaurant_id(), menuName);
         menuRepo.createMenu(menu);
 
-        // Retrieve the list of menus for the restaurant
         List<Menu> menus = menuRepo.getMenusByRestaurant(restaurant.getRestaurant_id());
 
-        // Search for the menu with the specified name to get its ID
         for (Menu m : menus) {
             if (m.getMenuName().equals(menuName)) {
                 menu.setMenu_id(m.getMenu_id());

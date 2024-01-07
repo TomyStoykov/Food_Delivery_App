@@ -1,3 +1,8 @@
+import Database.DatabaseManager;
+import Model.Cart;
+import Repositories.*;
+import Services.*;
+
 public class ApplicationInitializer {
     public UserInterface initialize(){
         String dbPath = "C:\\Users\\user\\Desktop\\db\\db.sqlite";
@@ -11,10 +16,10 @@ public class ApplicationInitializer {
         RestaurantRepository restaurantRepository = new RestaurantRepository(databaseManager);
         OrderRepository orderRepository = new OrderRepository(databaseManager);
 
-        MealService mealService = new MealService(mealRepository, sectionRepository,new CartService());
+        MealService mealService = new MealService(mealRepository, new CartService());
         RestaurantService restaurantService = new RestaurantService(databaseManager);
-        SectionService sectionService = new SectionService(databaseManager,mealService);
-        MenuService menuService = new MenuService(databaseManager,sectionService);
+        SectionService sectionService = new SectionService(databaseManager);
+        MenuService menuService = new MenuService(databaseManager);
         CartService cartService = new CartService();
         OrderService orderService = new OrderService(orderRepository,orderDetailRepository,mealRepository,cartService,cart);
 

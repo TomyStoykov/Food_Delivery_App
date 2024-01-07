@@ -1,14 +1,20 @@
+import Model.Meal;
+import Model.Menu;
+import Model.Restaurant;
+import Model.Section;
+import Services.*;
+
 import java.util.List;
 import java.util.Scanner;
 
 public class UserInterface {
-        private CartService cartService;
-        private MealService mealService;
-        private RestaurantService restaurantService;
-        private MenuService menuService;
-        private SectionService sectionService;
-        private OrderService orderService;
-        private Scanner scanner;
+        private final CartService cartService;
+        private final MealService mealService;
+        private final RestaurantService restaurantService;
+        private final MenuService menuService;
+        private final SectionService sectionService;
+        private final OrderService orderService;
+        private final Scanner scanner;
 
         public UserInterface(CartService cartService, MealService mealService, RestaurantService restaurantService, MenuService menuService, SectionService sectionService,OrderService orderService) {
             this.cartService = cartService;
