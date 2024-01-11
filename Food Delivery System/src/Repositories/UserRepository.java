@@ -6,6 +6,7 @@ import ValidateUser.InvalidInputException;
 import ValidateUser.ValidateEmail;
 import ValidateUser.ValidatePassword;
 import ValidateUser.ValidateUsername;
+import Security.PasswordHasher;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -50,8 +51,8 @@ public class UserRepository {
             System.out.println("Enter your password: ");
             String password = scanner.nextLine();
             ValidatePassword.isValidPassword(password);
-            //TODO : hash the password, add salt
-
+            byte[] salt = PasswordHasher.generateSalt();
+            String hashedPassword = PasswordHasher.hashPassword(password, salt);
             System.out.println("Enter your email: ");
             String email = scanner.nextLine();
             ValidateEmail.isValidEmail(email);
