@@ -2,17 +2,10 @@ package Repositories;
 
 import Database.DatabaseManager;
 import Model.User;
-import ValidateUser.InvalidInputException;
-import ValidateUser.ValidateEmail;
-import ValidateUser.ValidatePassword;
-import ValidateUser.ValidateUsername;
-import Security.PasswordHasher;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Scanner;
 
 public class UserRepository {
 
@@ -33,6 +26,7 @@ public class UserRepository {
             preparedStatement.setString(4, user.getAddress());
             preparedStatement.setString(5, user.getPhoneNumber());
             preparedStatement.setString(6, user.getRole());
+            preparedStatement.setBytes(7, user.getSalt());
 
             preparedStatement.executeUpdate();
             return true;
@@ -41,75 +35,7 @@ public class UserRepository {
             return false;
         }
     }
-
-    public boolean registerUser() {
-        try {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter your username: ");
-            String username = scanner.nextLine();
-            ValidateUsername.isValidUsername(username);
-            System.out.println("Enter your password: ");
-            String password = scanner.nextLine();
-            ValidatePassword.isValidPassword(password);
-            byte[] salt = PasswordHasher.generateSalt();
-            String hashedPassword = PasswordHasher.hashPassword(password, salt);
-            System.out.println("Enter your email: ");
-            String email = scanner.nextLine();
-            ValidateEmail.isValidEmail(email);
-
-            System.out.println("Enter your address: ");
-            String address = scanner.nextLine();
-
-            System.out.println("Enter your phone number: ");
-            String phoneNumber = scanner.nextLine();
-
-            String role = "customer";
-
-            User newUser = new User(username, email, password, address, phoneNumber, role);
-
-            createUser(newUser);
-
-            System.out.println("Registration successful.");
-            return true;
-
-        } catch (InvalidInputException e) {
-            System.out.println("Invalid input: " + e.getMessage());
-            return false;
-        } catch (Exception e) {
-            System.out.println("Registration failed: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public boolean loginUser() {
-        try {
-            Scanner scanner = new Scanner(System.in);
-
-            System.out.println("Enter your username: ");
-            String username = scanner.nextLine();
-            System.out.println("Enter your password: ");
-            String password = scanner.nextLine();
-
-            User foundUser = getUserByUsername(username);
-
-            if (foundUser == null) {
-                System.out.println("Model.User not found.");
-                return false;
-            }
-            if (password.equals(foundUser.getHashedPassword())) {
-                System.out.println("Login successful.");
-                return true;
-            } else {
-                System.out.println("Invalid password.");
-                return false;
-            }
-        } catch (Exception e) {
-            System.out.println("Login failed: " + e.getMessage());
-            return false;
-        }
-    }
-
-    private User getUserByUsername(String username) {
+    public User getUserByUsername(String username) {
         String sql ="SELECT user_id, name, email, address, phoneNumber, role FROM users WHERE name = ?";
         Connection connection = null;
 
@@ -127,8 +53,9 @@ public class UserRepository {
                 String address = resultSet.getString("address");
                 String phoneNumber = resultSet.getString("phoneNumber");
                 String role = resultSet.getString("role");
+                byte[] salt = resultSet.getBytes("salt");
 
-                User user = new User(username, email, password, address, phoneNumber, role);
+                User user = new User(username, email, password, address, phoneNumber, role,salt);
                 user.setUser_id(userId);
                 return user;
             }
