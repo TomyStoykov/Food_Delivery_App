@@ -8,37 +8,22 @@ import ValidateUser.ValidateEmail;
 import ValidateUser.ValidatePassword;
 import ValidateUser.ValidateUsername;
 
-import java.util.Scanner;
-
 public class UserService {
     private final UserRepository userRepository;
     private User loggedInUser;
+    private int loggedInUserId;
 
     public UserService(UserRepository userRepository){
         this.userRepository = userRepository;
     }
 
-    public boolean registerUser() {
+    public boolean registerUser(String username,String password,String email,String address,String phoneNumber) {
         try {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter your username: ");
-            String username = scanner.nextLine();
             ValidateUsername.isValidUsername(username);
-            System.out.println("Enter your password: ");
-            String password = scanner.nextLine();
             ValidatePassword.isValidPassword(password);
             byte[] salt = PasswordHasher.generateSalt();
             String hashedPassword = PasswordHasher.hashPassword(password, salt);
-            System.out.println("Enter your email: ");
-            String email = scanner.nextLine();
             ValidateEmail.isValidEmail(email);
-
-            System.out.println("Enter your address: ");
-            String address = scanner.nextLine();
-
-            System.out.println("Enter your phone number: ");
-            String phoneNumber = scanner.nextLine();
-
             String role = "customer";
 
             User newUser = new User(username, email, hashedPassword, address, phoneNumber, role,salt);
@@ -57,15 +42,7 @@ public class UserService {
         }
     }
 
-    public boolean loginUser() {
-        try {
-            Scanner scanner = new Scanner(System.in);
-
-            System.out.println("Enter your username: ");
-            String username = scanner.nextLine();
-            System.out.println("Enter your password: ");
-            String password = scanner.nextLine();
-
+    public boolean loginUser(String username,String password) {
             User foundUser = userRepository.getUserByUsername(username);
 
             if (foundUser == null) {
@@ -77,15 +54,12 @@ public class UserService {
             if (password.equals(foundUser.getHashedPassword())) {
                 System.out.println("Login successful.");
                 loggedInUser = foundUser;
+                loggedInUserId = foundUser.getUser_id();
                 return true;
             } else {
                 System.out.println("Invalid password.");
                 return false;
             }
-        } catch (Exception e) {
-            System.out.println("Login failed: " + e.getMessage());
-            return false;
-        }
     }
 
     public User getLoggedInUser() {
@@ -94,5 +68,13 @@ public class UserService {
 
     public void logoutUser() {
         loggedInUser = null;
+    }
+
+    public int getLoggedInUserId() {
+        return loggedInUserId;
+    }
+
+    public void setLoggedInUserId(int loggedInUserId) {
+        this.loggedInUserId = loggedInUserId;
     }
 }

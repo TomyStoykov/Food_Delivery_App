@@ -14,15 +14,19 @@ public class UserInterface {
         private final MenuService menuService;
         private final SectionService sectionService;
         private final OrderService orderService;
+        private final UserService userService;
         private final Scanner scanner;
 
-        public UserInterface(CartService cartService, MealService mealService, RestaurantService restaurantService, MenuService menuService, SectionService sectionService,OrderService orderService) {
+
+        public UserInterface(CartService cartService, MealService mealService, RestaurantService restaurantService, MenuService menuService,
+                             SectionService sectionService,OrderService orderService, UserService userService) {
             this.cartService = cartService;
             this.mealService = mealService;
             this.restaurantService = restaurantService;
             this.menuService = menuService;
             this.sectionService = sectionService;
             this.orderService = orderService;
+            this.userService = userService;
             this.scanner = new Scanner(System.in);
         }
 
@@ -45,7 +49,7 @@ public class UserInterface {
                             cartService.displayCart();
                             break;
                         case 3:
-                            orderService.finalizeOrder();
+                            finalizeOrder();
                             break;
                         case 4:
                             keepShopping = false;
@@ -57,8 +61,52 @@ public class UserInterface {
                 }
             }
         }
+        private void performRegistration() {
+            System.out.println("Enter your username: ");
+            String username = scanner.nextLine();
+            System.out.println("Enter your password: ");
+            String password = scanner.nextLine();
+            System.out.println("Enter your email: ");
+            String email = scanner.nextLine();
+            System.out.println("Enter your address: ");
+            String address = scanner.nextLine();
+            System.out.println("Enter your phone number: ");
+            String phoneNumber = scanner.nextLine();
 
-        private void displayRestaurants() {
+            boolean success = userService.registerUser(username, password, email, address, phoneNumber);
+            if (!success) {
+                System.out.println("Registration failed. Please try again.");
+            }
+        }
+        private void performLogin() {
+            System.out.println("Enter your username: ");
+            String username = scanner.nextLine();
+            System.out.println("Enter your password: ");
+            String password = scanner.nextLine();
+
+            boolean success = userService.loginUser(username, password);
+            if (!success) {
+                System.out.println("Login failed. Please try again.");
+            }
+        }
+    private void finalizeOrder() {
+        if (userService.getLoggedInUser() == null) {
+            System.out.println("Please log in to finalize your order.");
+            return;
+        }
+        cartService.displayCart();
+        System.out.println("Do you want to finalize your order? (1 for Yes, 0 for No)");
+        int confirmation = scanner.nextInt();
+        scanner.nextLine();
+
+        if (confirmation == 1) {
+            orderService.finalizeOrder(userService.getLoggedInUserId(), cartService.getCurrentRestaurantId());
+        } else {
+            System.out.println("Order was not placed.");
+        }
+    }
+
+    private void displayRestaurants() {
             List<Restaurant> restaurants = restaurantService.displayRestaurants();
             System.out.println("Enter the number of the restaurant to view details or 0 to go back.");
             int choice;
@@ -122,20 +170,20 @@ public class UserInterface {
                 }
                 if (choice > 0 && choice <= sections.size()) {
                     int sectionId = sections.get(choice - 1).getSection_id();
-                    displayMealsForSection(sectionId, menuId);
+                    displayMealsForSection(sectionId, menuId,restaurantId);
                 } else {
                     System.out.println("Invalid choice. Please select a valid option.");
                 }
             }while(true);
         }
 
-        private void displayMealsForSection(int sectionId,int menuId) {
+        private void displayMealsForSection(int sectionId,int menuId,int restaurantId) {
             List<Meal> meals = mealService.getMealsForSection(sectionId);
-            handleMealSelection(meals,menuId,sectionId);
+            handleMealSelection(meals,menuId,sectionId,restaurantId);
         }
 
 
-    private void handleMealSelection(List<Meal> meals, int menuId, int sectionId) {
+    private void handleMealSelection(List<Meal> meals, int menuId, int sectionId,int restaurantId) {
         int choice;
         do {
             System.out.println("Enter meal number to add to cart, 0 to finalize or -1 to go back.");
@@ -155,13 +203,13 @@ public class UserInterface {
                 }
                 quantity = scanner.nextInt();
                 scanner.nextLine();
-                cartService.addItemToCart(selectedMeal, quantity);
+                cartService.addItemToCart(selectedMeal, quantity,restaurantId);
                 System.out.println(quantity + " x " + selectedMeal.getDescription() + " has been added to the cart!");
             } else if (choice == -1) {
                 displaySectionsForMenu(menuId, sectionId);
                 return;
             } else if (choice == 0) {
-                orderService.finalizeOrder();
+                finalizeOrder();
                 System.out.println("Your order has been finalized.");
                 return;
             } else {
@@ -170,5 +218,6 @@ public class UserInterface {
         } while (choice != 0);
 
     }
+
 
 }
