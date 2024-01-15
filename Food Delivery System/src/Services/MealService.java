@@ -8,7 +8,7 @@ import java.util.List;
 public class MealService {
     private final Repositories.MealRepository MealRepository;
 
-    public MealService(MealRepository MealRepository, CartService cartService) {
+    public MealService(MealRepository MealRepository) {
         this.MealRepository = MealRepository;
     }
 

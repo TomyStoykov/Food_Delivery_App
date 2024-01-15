@@ -6,17 +6,31 @@ import Model.Meal;
 
 public class CartService {
     private final Cart cart;
+    private int currentRestaurantId;
 
     public CartService() {
         this.cart = new Cart();
     }
 
-    public void addItemToCart(Meal meal, int quantity) {
+    public void addItemToCart(Meal meal, int quantity,int restaurantId) {
         cart.addMeal(meal, quantity);
+        this.currentRestaurantId =  restaurantId;
     }
 
     public double getCartTotal() {
         return cart.getTotalPrice();
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public int getCurrentRestaurantId() {
+        return currentRestaurantId;
+    }
+
+    public void setCurrentRestaurantId(int currentRestaurantId) {
+        this.currentRestaurantId = currentRestaurantId;
     }
 
     public void displayCart() {
