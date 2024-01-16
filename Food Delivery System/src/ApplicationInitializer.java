@@ -5,9 +5,7 @@ import Services.*;
 
 public class ApplicationInitializer {
     public UserInterface initialize(){
-        String dbPath = "C:\\Users\\user\\Desktop\\db\\db.sqlite";
-        DatabaseManager databaseManager = new DatabaseManager(dbPath);
-        Cart cart = new Cart();
+        DatabaseManager databaseManager = new DatabaseManager();
 
         MealRepository mealRepository = new MealRepository(databaseManager);
         SectionRepository sectionRepository = new SectionRepository(databaseManager);

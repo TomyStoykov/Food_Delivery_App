@@ -18,8 +18,8 @@ public class Runner {
     private final SectionRepository sectionRepo;
     private final MealRepository mealRepo;
 
-    public Runner(String dbPath) {
-        DatabaseManager databaseManager = new DatabaseManager(dbPath);
+    public Runner() {
+        DatabaseManager databaseManager = new DatabaseManager();
         this.restaurantRepo = new RestaurantRepository(databaseManager);
         this.menuRepo = new MenuRepository(databaseManager);
         this.sectionRepo = new SectionRepository(databaseManager);
@@ -27,9 +27,8 @@ public class Runner {
     }
 
     public static void main(String[] args) {
-        String dbPath = "C:\\Users\\user\\Desktop\\msg db\\db.sqlite";
 
-        Runner runner = new Runner(dbPath);
+        Runner runner = new Runner();
 
         runner.createBulgarianRestaurant();
         runner.createKoreanRestaurant();

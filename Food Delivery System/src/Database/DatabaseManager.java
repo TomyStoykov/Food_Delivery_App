@@ -5,19 +5,18 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseManager {
-    private final String DB_URL;
     private Connection connection;
-
-    public DatabaseManager(String dbPath) {
-        this.DB_URL = "jdbc:sqlite:" + dbPath;
-    }
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/Food_Delivery_App";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "********";
 
     private void connect() {
         try {
-            connection = DriverManager.getConnection(DB_URL);
-            System.out.println("Connection to SQLite successful");
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            System.out.println("Connection to MySQL successful");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Connection to MySQL failed: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -28,22 +27,24 @@ public class DatabaseManager {
         return connection;
     }
 
-    public void closeConnection () {
-        try {
-            if (connection != null) {
+    public void closeConnection() {
+        try
+        {
+            if (connection != null && !connection.isClosed()) {
                 connection.close();
             }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch(SQLException e){
+            System.out.println("Failed to close the MySQL connection: " + e.getMessage());
+            e.printStackTrace();
         }
     }
-
     private boolean isClosed() {
         try {
-            return connection.isClosed();
+            return connection == null || connection.isClosed();
         } catch (SQLException e) {
-               return true;
+            System.out.println("Failed to check if the MySQL connection is closed: " + e.getMessage());
+            e.printStackTrace();
+            return true;
         }
     }
 }
-
