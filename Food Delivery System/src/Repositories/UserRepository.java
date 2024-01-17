@@ -16,7 +16,7 @@ public class UserRepository {
     }
 
     public boolean createUser(User user) {
-        String sql = "INSERT INTO users (name,email,hashedPassword,address,phoneNumber,role) VALUES (?,?,?,?,?,?)";
+        String sql = "INSERT INTO users (name,email,hashedPassword,address,phoneNumber,role,salt) VALUES (?,?,?,?,?,?,?)";
         try {
             Connection connection = databaseManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -36,7 +36,7 @@ public class UserRepository {
         }
     }
     public User getUserByUsername(String username) {
-        String sql ="SELECT user_id, name, email, address, phoneNumber, role FROM users WHERE name = ?";
+        String sql ="SELECT user_id, name, email, hashedPassword, address, phoneNumber, role, salt FROM users WHERE name = ?";
         Connection connection = null;
 
         try {
@@ -59,7 +59,7 @@ public class UserRepository {
                 user.setUser_id(userId);
                 return user;
             }
-
+            return null;
         } catch (SQLException e) {
             System.out.println("Error retrieving user: " + e.getMessage());
         } finally {
