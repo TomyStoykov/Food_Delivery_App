@@ -74,7 +74,9 @@ public class UserInterface {
             String phoneNumber = scanner.nextLine();
 
             boolean success = userService.registerUser(username, password, email, address, phoneNumber);
-            if (!success) {
+            if (success) {
+                performLogin(username,password);
+            }else{
                 System.out.println("Registration failed. Please try again.");
             }
         }
@@ -87,11 +89,34 @@ public class UserInterface {
             boolean success = userService.loginUser(username, password);
             if (!success) {
                 System.out.println("Login failed. Please try again.");
+                performLogin();
+            }
+        }
+        private void performLogin(String username,String password){
+            boolean success = userService.loginUser(username,password);
+            if(!success){
+                System.out.println("Log in failed.Please try again.");
             }
         }
     private void finalizeOrder() {
         if (userService.getLoggedInUser() == null) {
             System.out.println("Please log in to finalize your order.");
+            System.out.println("Choose 1 for login and 2 for register and 0 to go back");
+            int input = scanner.nextInt();
+            scanner.nextLine();
+            switch (input){
+                case 0:
+                    startShopping();
+                    break;
+                case 1:
+                    performLogin();
+                    break;
+                case 2:
+                    performRegistration();
+                    break;
+            }
+        }
+        if (userService.getLoggedInUser() == null) {
             return;
         }
         cartService.displayCart();
@@ -210,7 +235,6 @@ public class UserInterface {
                 return;
             } else if (choice == 0) {
                 finalizeOrder();
-                System.out.println("Your order has been finalized.");
                 return;
             } else {
                 System.out.println("Invalid choice. Please try again.");

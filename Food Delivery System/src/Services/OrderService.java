@@ -36,11 +36,7 @@ public class OrderService {
     }
 
     public void finalizeOrder(int userId, int restaurantId) {
-        cartService.displayCart();
-
         System.out.println("Total: $" + cartService.getCartTotal());
-
-        System.out.println("Do you want to finalize your order? (1 for Yes, 0 for No)");
          Cart cart = cartService.getCart();
             int orderId = orderRepository.saveOrder(cart,userId,restaurantId);
             if(orderId != -1){
