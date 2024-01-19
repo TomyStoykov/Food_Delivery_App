@@ -1,3 +1,5 @@
+package UI;
+
 import Model.Meal;
 import Model.Menu;
 import Model.Restaurant;

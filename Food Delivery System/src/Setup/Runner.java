@@ -1,3 +1,5 @@
+package Setup;
+
 import Database.DatabaseManager;
 import Expections.EntityNotFoundException;
 import Model.Meal;
@@ -39,7 +41,7 @@ public class Runner {
         Section salads = createSectionForMenu(bulgarianMenu, "Salads");
         addMealToSection(salads, 4.50, "Shopska Salad");
         addMealToSection(salads,5,"Ovcharska Salad");
-        Section mainCourse = createSectionForMenu(bulgarianMenu,"Main Course");
+        Section mainCourse = createSectionForMenu(bulgarianMenu,"Main.Main Course");
         addMealToSection(mainCourse,10,"Chicken");
         addMealToSection(mainCourse,15,"Beef");
 
@@ -51,7 +53,7 @@ public class Runner {
         Section rice = createSectionForMenu(koreanMenu,"Rice");
         addMealToSection(rice, 7, "White rice");
         addMealToSection(rice, 8,"Brown rice");
-        Section mainCourse = createSectionForMenu(koreanMenu,"Main course");
+        Section mainCourse = createSectionForMenu(koreanMenu,"Main.Main course");
         addMealToSection(mainCourse,20,"Beef");
         Menu sushiMenu = createMenuForRestaurant(koreanRestaurant,"Sushi");
         Section sushi = createSectionForMenu(sushiMenu,"Sushi");

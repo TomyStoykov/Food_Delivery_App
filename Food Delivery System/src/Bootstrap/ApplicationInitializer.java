@@ -1,7 +1,9 @@
+package Bootstrap;
+
 import Database.DatabaseManager;
-import Model.Cart;
 import Repositories.*;
 import Services.*;
+import UI.UserInterface;
 
 public class ApplicationInitializer {
     public UserInterface initialize(){
